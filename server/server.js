@@ -14,16 +14,17 @@ import { stripeWebhooks } from './controllers/stripeWebhooks.js';
 
 const app=express();
 const port=3000;
+await connectdb();
+//stripe webhooks route 
+app.use('/api/stripe',express.raw({type : 'application/json'}),stripeWebhooks)
 //middleware 
 app.use(express.json())
 app.use(cors())
 app.use(clerkMiddleware())
 
 
-await connectdb();
 
 //strip webhooks
-app.use('/api/stripe',express.raw({type : 'application/json'}),stripeWebhooks)
 //api routes
 app.get("/",(req,res)=>{
     res.send('server is live')

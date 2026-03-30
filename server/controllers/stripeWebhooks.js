@@ -1,14 +1,20 @@
 import stripe from 'stripe'
 import Booking from '../models/Booking.js'
-export const stripeWebhooks = async (req, res)=>{
-const stripInstance= new stripe(process.env.STRIP_SECRET_KEY)
-const sig=req.headers["stripe-signature"]
+
+
+export const stripeWebhooks = async (request, response)=>{
+    console.log('webhook hit');
+    
+const stripInstance= new stripe(process.env.STRIPE_SECRET_KEY)
+const sig=request.headers["stripe-signature"]
 
 let event;
 try {
-    event=stripInstance.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SCERET)
+    event=stripInstance.webhooks.constructEvent(request.body, sig, process.env.STRIPE_WEBHOOK_SECRET)
+    console.log("event type :", event.type);
+    
 } catch (error) {
-    return res.status(400).send(`Webhook error: ${error.message}`)
+    return response.status(400).send(`Webhook error: ${error.message}`)
 }
 try {
     switch(event.type){
@@ -17,7 +23,8 @@ try {
             const sessionList= await stripInstance.checkout.sessions.list({payment_intent: paymentIntent.id})
             const session=sessionList.data[0];
             const {bookingId}=session.metadata;
-            await Booking.findByIdAndUpdate(bookingId, {isPaid: true ,paymentLink : ""})
+            await Booking.findByIdAndUpdate(bookingId, {isPaid : true ,paymentLink : ''})
+            console.log(`Booking ${bookingId} marked as paid`);
             break;
         }
         default:
@@ -25,11 +32,11 @@ try {
             
          
     }
-    res.json({received: true})
+    response.json({received: true})
              
 } catch (error) {
     console.log("Webhook processing error: ",error);
-    res.status(500).send('Internal Server Error')
+    response.status(500).send('Internal Server Error')
 }
 
 }

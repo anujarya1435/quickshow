@@ -27,6 +27,7 @@ const SeatLayout = () => {
     }
     
    } catch (error) {
+    console.log(error);
     
    }
   }
@@ -58,7 +59,7 @@ const SeatLayout = () => {
               key={seatId}
               onClick={() => handleSeatClick(seatId)}
               className={`h-8 w-8 rounded border border-primary/60 cursor-pointer 
-                ${selectedSeats.includes(seatId) ? "bg-primary text-white" : ""} 
+                ${selectedSeats.includes(seatId) && "bg-primary text-white"} 
                 ${occupiedSeats.includes(seatId) && 'opacity-50 '}`}
             >
               {seatId}
@@ -94,6 +95,9 @@ const bookeTickets=async()=>{
     const {data}=await axios.post('/api/booking/create',{showId : selectedTime.showId , selectedSeats} , {headers : {Authorization : `Bearer ${await getToken()}`}})
     if(data.success){
       window.location.href=data.url;
+    
+    
+    
       
     }else{
       toast.error(data.message)

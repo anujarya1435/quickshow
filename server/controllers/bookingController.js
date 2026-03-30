@@ -52,8 +52,9 @@ if(!isAvailable){
 
  await showData.save();
 // Stripe GateWay Initialize
-const stripeInstance= new  stripe(process.env.STRIP_SECRET_KEY)
+const stripeInstance= new  stripe(process.env.STRIPE_SECRET_KEY)
 
+const usdAmount = booking.amount / 83;
 // creating line items to for stripe
 const line_items=[{
     price_data :{
@@ -61,7 +62,7 @@ const line_items=[{
         product_data : {
             name : showData.movie.title
         },
-        unit_amount : Math.floor(booking.amount)*100
+        unit_amount : Math.round(usdAmount*100)
     },
     quantity : 1
 }]
@@ -74,7 +75,7 @@ const session =await stripeInstance.checkout.sessions.create({
     metadata : {
     bookingId : booking._id.toString()
     },
-    expires_at : Math.floor(Date.now()/1000) + 30*60 // session expires in 30 minutes
+    expires_at : Math.floor(Date.now()/1000) + 30*60, // session expires in 30 minutes
 })
 
 booking.paymentLink=session.url;
@@ -82,6 +83,7 @@ await booking.save();
 
 
 res.json({success :true , url : session.url})
+
     } catch (error) {
         console.log(error.message);
         res.json({success :false , messsage : error.message
