@@ -106,10 +106,10 @@ const sendBookingConfirmationEmail=inngest.createFunction(
             model : 'Movie'
         }
     }).populate('user')
-    await sendEmail({
-        to : booking.user.email,
-        subject : `Payment Confirmation : "${booking.show.movie.title}" booked !`,
-        body : `<div style="font-family: Arial, sans-serif; line-height: 1.5;">
+    await sendEmail(
+         booking.user.email,
+        `Payment Confirmation : "${booking.show.movie.title}" booked !`,
+        `<div style="font-family: Arial, sans-serif; line-height: 1.5;">
                         <h2>Hi ${booking.user.name},</h2>
                          <p>Your booking for <strong style="color: #F84565;">"${booking.show.movie.title}"</strong> is confirmed.</p>
                            <p>
@@ -122,7 +122,7 @@ const sendBookingConfirmationEmail=inngest.createFunction(
                          <p>Enjoy the show! 🍿</p>
                         <p>Thanks for booking with us!<br/>- QuickShow Team</p>
                          </div>`
-    })
+    );
     }
 )
 
