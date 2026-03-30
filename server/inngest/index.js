@@ -131,7 +131,7 @@ const sendshowReminders= inngest.createFunction({
     id :'send-show-reminders',
     triggers : [
         {
-          cron : "0 */8 * * *'" ,// every 8 hours
+          cron : "0 */8 * * *" ,// every 8 hours
 
 }]
 },
