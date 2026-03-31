@@ -216,11 +216,11 @@ triggers : [
     <p>Thanks,<br/>QuickShow Team</p>
 </div>`;
 
-await sendEmail({
-    to : userEmail,
+await sendEmail(
+     userEmail,
     subject, 
     body
-})
+)
 }
 return {
     message : "Notifications sent."
